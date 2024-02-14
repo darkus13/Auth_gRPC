@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.28.1
 // 	protoc        v4.25.2
-// source: auth.proto
+// source: user_auth.proto
 
 package auth_v1
 
@@ -78,7 +78,7 @@ type CreateRequest struct {
 	Email           string `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
 	Password        string `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
 	PasswordConfirm string `protobuf:"bytes,4,opt,name=password_confirm,json=passwordConfirm,proto3" json:"password_confirm,omitempty"`
-	Role            Role   `protobuf:"varint,5,opt,name=role,proto3,enum=auth_v1.Role" json:"role,omitempty"`
+	Role            Role   `protobuf:"varint,5,opt,name=role,proto3,enum=user_api_v1.Role" json:"role,omitempty"`
 }
 
 func (x *CreateRequest) Reset() {
@@ -250,7 +250,7 @@ type GetResponse struct {
 	Id        int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name      string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Email     string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
-	Role      Role                   `protobuf:"varint,4,opt,name=role,proto3,enum=auth_v1.Role" json:"role,omitempty"`
+	Role      Role                   `protobuf:"varint,4,opt,name=role,proto3,enum=user_api_v1.Role" json:"role,omitempty"`
 	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 }
@@ -337,7 +337,7 @@ type UpdateRequest struct {
 	Id    int64                   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name  *wrapperspb.StringValue `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Email *wrapperspb.StringValue `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
-	Role  Role                    `protobuf:"varint,4,opt,name=role,proto3,enum=auth_v1.Role" json:"role,omitempty"`
+	Role  Role                    `protobuf:"varint,4,opt,name=role,proto3,enum=user_api_v1.Role" json:"role,omitempty"`
 }
 
 func (x *UpdateRequest) Reset() {
@@ -639,37 +639,37 @@ func file_auth_proto_rawDescGZIP() []byte {
 var file_auth_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_auth_proto_goTypes = []interface{}{
-	(Role)(0),                      // 0: auth_v1.Role
-	(*CreateRequest)(nil),          // 1: auth_v1.CreateRequest
-	(*CreateResponse)(nil),         // 2: auth_v1.CreateResponse
-	(*GetRequest)(nil),             // 3: auth_v1.GetRequest
-	(*GetResponse)(nil),            // 4: auth_v1.GetResponse
-	(*UpdateRequest)(nil),          // 5: auth_v1.UpdateRequest
-	(*UpdateResponse)(nil),         // 6: auth_v1.UpdateResponse
-	(*DeleteRequest)(nil),          // 7: auth_v1.DeleteRequest
-	(*DeleteResponse)(nil),         // 8: auth_v1.DeleteResponse
+	(Role)(0),                      // 0: user_api_v1.Role
+	(*CreateRequest)(nil),          // 1: user_api_v1.CreateRequest
+	(*CreateResponse)(nil),         // 2: user_api_v1.CreateResponse
+	(*GetRequest)(nil),             // 3: user_api_v1.GetRequest
+	(*GetResponse)(nil),            // 4: user_api_v1.GetResponse
+	(*UpdateRequest)(nil),          // 5: user_api_v1.UpdateRequest
+	(*UpdateResponse)(nil),         // 6: user_api_v1.UpdateResponse
+	(*DeleteRequest)(nil),          // 7: user_api_v1.DeleteRequest
+	(*DeleteResponse)(nil),         // 8: user_api_v1.DeleteResponse
 	(*timestamppb.Timestamp)(nil),  // 9: google.protobuf.Timestamp
 	(*wrapperspb.StringValue)(nil), // 10: google.protobuf.StringValue
 	(*emptypb.Empty)(nil),          // 11: google.protobuf.Empty
 }
 var file_auth_proto_depIdxs = []int32{
-	0,  // 0: auth_v1.CreateRequest.role:type_name -> auth_v1.Role
-	0,  // 1: auth_v1.GetResponse.role:type_name -> auth_v1.Role
-	9,  // 2: auth_v1.GetResponse.created_at:type_name -> google.protobuf.Timestamp
-	9,  // 3: auth_v1.GetResponse.updated_at:type_name -> google.protobuf.Timestamp
-	10, // 4: auth_v1.UpdateRequest.name:type_name -> google.protobuf.StringValue
-	10, // 5: auth_v1.UpdateRequest.email:type_name -> google.protobuf.StringValue
-	0,  // 6: auth_v1.UpdateRequest.role:type_name -> auth_v1.Role
-	11, // 7: auth_v1.UpdateResponse.empty:type_name -> google.protobuf.Empty
-	11, // 8: auth_v1.DeleteResponse.empty:type_name -> google.protobuf.Empty
-	1,  // 9: auth_v1.AuthV1.Create:input_type -> auth_v1.CreateRequest
-	3,  // 10: auth_v1.AuthV1.Get:input_type -> auth_v1.GetRequest
-	5,  // 11: auth_v1.AuthV1.Update:input_type -> auth_v1.UpdateRequest
-	7,  // 12: auth_v1.AuthV1.Delete:input_type -> auth_v1.DeleteRequest
-	2,  // 13: auth_v1.AuthV1.Create:output_type -> auth_v1.CreateResponse
-	4,  // 14: auth_v1.AuthV1.Get:output_type -> auth_v1.GetResponse
-	6,  // 15: auth_v1.AuthV1.Update:output_type -> auth_v1.UpdateResponse
-	8,  // 16: auth_v1.AuthV1.Delete:output_type -> auth_v1.DeleteResponse
+	0,  // 0: user_api_v1.CreateRequest.role:type_name -> user_api_v1.Role
+	0,  // 1: user_api_v1.GetResponse.role:type_name -> user_api_v1.Role
+	9,  // 2: user_api_v1.GetResponse.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 3: user_api_v1.GetResponse.updated_at:type_name -> google.protobuf.Timestamp
+	10, // 4: user_api_v1.UpdateRequest.name:type_name -> google.protobuf.StringValue
+	10, // 5: user_api_v1.UpdateRequest.email:type_name -> google.protobuf.StringValue
+	0,  // 6: user_api_v1.UpdateRequest.role:type_name -> user_api_v1.Role
+	11, // 7: user_api_v1.UpdateResponse.empty:type_name -> google.protobuf.Empty
+	11, // 8: user_api_v1.DeleteResponse.empty:type_name -> google.protobuf.Empty
+	1,  // 9: user_api_v1.AuthV1.Create:input_type -> user_api_v1.CreateRequest
+	3,  // 10: user_api_v1.AuthV1.Get:input_type -> user_api_v1.GetRequest
+	5,  // 11: user_api_v1.AuthV1.Update:input_type -> user_api_v1.UpdateRequest
+	7,  // 12: user_api_v1.AuthV1.Delete:input_type -> user_api_v1.DeleteRequest
+	2,  // 13: user_api_v1.AuthV1.Create:output_type -> user_api_v1.CreateResponse
+	4,  // 14: user_api_v1.AuthV1.Get:output_type -> user_api_v1.GetResponse
+	6,  // 15: user_api_v1.AuthV1.Update:output_type -> user_api_v1.UpdateResponse
+	8,  // 16: user_api_v1.AuthV1.Delete:output_type -> user_api_v1.DeleteResponse
 	13, // [13:17] is the sub-list for method output_type
 	9,  // [9:13] is the sub-list for method input_type
 	9,  // [9:9] is the sub-list for extension type_name

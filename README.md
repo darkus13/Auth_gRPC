@@ -1,1 +1,1 @@
-# auth_course
+# auth_service
