@@ -17,6 +17,7 @@ import (
 
 const grpcPort = 50051
 
+// Структура сервера
 type server struct {
 	auth_v1.UnimplementedAuthV1Server
 }
