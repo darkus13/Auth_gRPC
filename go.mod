@@ -1,4 +1,4 @@
-module grpc
+module github.com/darkus13/Auth_gRPC
 
 go 1.22
 
