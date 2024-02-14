@@ -12,14 +12,14 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"grpc/grpc/pkg/user_api_v1"
+	"grpc/pkg/user_api_v1"
 )
 
 const grpcPort = 50051
 
 // Структура сервера
 type server struct {
-	user_api_v1.UnimplementedAuthV1Server
+	user_api_v1.UnimplementedUserV1Server
 }
 
 func (s *server) Get(ctx context.Context, req *user_api_v1.GetRequest) (*user_api_v1.GetResponse, error) {
@@ -57,7 +57,7 @@ func main() {
 
 	s := grpc.NewServer()
 	reflection.Register(s)
-	user_api_v1.RegisterAuthV1Server(s, &server{})
+	user_api_v1.RegisterUserV1Server(s, &server{})
 
 	log.Printf("server listening at %v", lis.Addr())
 

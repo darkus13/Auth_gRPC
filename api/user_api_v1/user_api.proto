@@ -6,9 +6,9 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/wrappers.proto";
 
-option go_package = "github.com/darkus13/Auth_gRPC/grpc/pkg/user_api_v1;user_api_v1";
+option go_package = "github.com/darkus13/Auth_gRPC/pkg/user_api_v1;user_api_v1";
 
-service AuthV1 {
+service User_v1 {
   rpc Create(CreateRequest) returns (CreateResponse);
   rpc Get(GetRequest) returns (GetResponse);
   rpc Update(UpdateRequest) returns (google.protobuf.Empty);
