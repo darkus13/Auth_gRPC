@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	dbDSN    = "host=localhost port=54321 dbname=postgres user=darkus password=andrej sslmode=disable"
+	dbDSN    = "host=localhost port=54321 dbname=auth user=darkus password=andrej sslmode=disable"
 	grpcPort = 50051
 )
 
