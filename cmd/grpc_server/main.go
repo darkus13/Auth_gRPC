@@ -27,7 +27,7 @@ const (
 	usersRole            = "role"
 	usersCreatedat       = "created_at"
 	usersUpdatedat       = "updated_at"
-	TableUsers           = "users"
+	tableUsers           = "users"
 	usersPassword        = "password"
 	usersPasswordConfirm = "password_confirm"
 )
@@ -93,7 +93,7 @@ func (s *server) Create(ctx context.Context, req *user_api_v1.CreateRequest) (*u
 	confirmPassword := req.GetPasswordConfirm()
 	role := req.GetRole().String()
 
-	InsertBuilder := s.qb.Insert(TableUsers).
+	InsertBuilder := s.qb.Insert(tableUsers).
 		PlaceholderFormat(sq.Dollar).
 		Columns(usersName, usersEmail, usersPassword, usersPasswordConfirm, usersRole).
 		Values(name, email, password, confirmPassword, role).
@@ -124,7 +124,7 @@ func (s *server) Update(ctx context.Context, req *user_api_v1.UpdateRequest) (*e
 	email := req.GetEmail()
 	role := req.GetRole()
 
-	UpdateBuilder := s.qb.Update(TableUsers).
+	UpdateBuilder := s.qb.Update(tableUsers).
 		PlaceholderFormat(sq.Dollar).
 		Set(usersName, name).
 		Set(usersEmail, email).
@@ -152,7 +152,7 @@ func (s *server) Delete(ctx context.Context, req *user_api_v1.DeleteRequest) (*e
 
 	iD := req.GetId()
 
-	DeleteBuilder := s.qb.Delete(TableUsers).
+	DeleteBuilder := s.qb.Delete(tableUsers).
 		Where(sq.Eq{usersId: iD})
 
 	query, args, err := DeleteBuilder.ToSql()
