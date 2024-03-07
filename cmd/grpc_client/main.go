@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/brianvoe/gofakeit"
+
 	"github.com/darkus13/Auth_gRPC/pkg/user_api_v1"
 )
 
@@ -22,7 +23,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to connect to server: %v", err)
 	}
-	defer conn.Close()
+	defer func(conn *grpc.ClientConn) {
+		err := conn.Close()
+		if err != nil {
+
+		}
+	}(conn)
 
 	c := user_api_v1.NewUserV1Client(conn)
 
@@ -43,28 +49,4 @@ func main() {
 	}
 
 	log.Printf("user with id: %d was created.", r.GetId())
-
-	// r, err := c.Get(ctx, &desc.GetRequest{Id: userID})
-	// if err != nil {
-	// 	log.Fatalf("failed to get user by id: %v", err)
-	// }
-
-	// log.Printf("User info:\nID: %d\nName: %s\nEmail: %s\nRole: %s\nCreated at: %v\nUpdated at: %v",
-	// 	r.GetId(), r.GetName(), r.GetEmail(), r.GetRole(),
-	// 	r.GetCreatedAt(), r.GetUpdatedAt())
-
-	// _, err = c.Delete(ctx, &desc.DeleteRequest{Id: userID})
-	// if err != nil {
-	// 	log.Fatalf("failed to delete user: %v", err)
-	// }
-
-	// _, err = c.Update(ctx, &desc.UpdateRequest{
-	// 	Id:    userID,
-	// 	Name:  wrapperspb.String(gofakeit.Name()),
-	// 	Email: wrapperspb.String(gofakeit.Email()),
-	// 	Role:  desc.UserRole(1),
-	// })
-	// if err != nil {
-	// 	log.Fatalf("failed to update user info: %v", err)
-	// }
 }

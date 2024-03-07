@@ -1,4 +1,4 @@
-package main
+package note
 
 import (
 	"context"
@@ -19,17 +19,8 @@ import (
 )
 
 const (
-	dbDSN                = "host=localhost port=54321 dbname=auth user=darkus password=andrej sslmode=disable"
-	grpcPort             = 50051
-	usersId              = "id"
-	usersName            = "name"
-	usersEmail           = "email"
-	usersRole            = "role"
-	usersCreatedat       = "created_at"
-	usersUpdatedat       = "updated_at"
-	TableUsers           = "users"
-	usersPassword        = "password"
-	usersPasswordConfirm = "password_confirm"
+	dbDSN    = "host=localhost port=54321 dbname=auth user=darkus password=andrej sslmode=disable"
+	grpcPort = 50051
 )
 
 type User struct {
@@ -51,26 +42,25 @@ type server struct {
 }
 
 func (s *server) Get(ctx context.Context, req *user_api_v1.GetRequest) (*user_api_v1.GetResponse, error) {
-	iD := req.GetId()
+	ID := req.GetId()
 
-	SelectBuilder := s.qb.Select(usersId, usersName, usersEmail, usersRole, usersCreatedat, usersUpdatedat).
-		From(TableUsers).
-		Where(sq.Eq{usersId: iD})
+	SelectBuilder := s.qb.Select("id", "name", "email", "role", "created_at", "updated_at").
+		From("users").
+		Where(sq.Eq{"id": ID})
 
 	query, args, err := SelectBuilder.ToSql()
 	if err != nil {
-		_ = fmt.Errorf("failed to build query: %v", err)
-
+		log.Fatalf("failed to build query: %v", err)
 	}
 
 	row, err := s.db.Query(ctx, query, args...)
 	if err != nil {
-		_ = fmt.Errorf("failed to get user from query: %v", err)
+		log.Fatalf("failed to get user from query: %v", err)
 	}
 
 	user, err := pgx.CollectOneRow(row, pgx.RowToAddrOfStructByNameLax[User])
 	if err != nil {
-		_ = fmt.Errorf("failed to collect user from db: %v", err)
+		log.Fatalf("failed to collect user from db: %v", err)
 	}
 
 	roleNum := user_api_v1.Role_value[user.Role]
@@ -86,29 +76,30 @@ func (s *server) Get(ctx context.Context, req *user_api_v1.GetRequest) (*user_ap
 
 	return &userData, nil
 }
-func (s *server) Create(ctx context.Context, req *user_api_v1.CreateRequest) (*user_api_v1.CreateResponse, error) {
-	name := req.GetName()
-	email := req.GetEmail()
-	password := req.GetPassword()
-	confirmPassword := req.GetPasswordConfirm()
-	role := req.GetRole().String()
 
-	InsertBuilder := s.qb.Insert(TableUsers).
+func (s *server) Create(ctx context.Context, req *user_api_v1.CreateRequest) (*user_api_v1.CreateResponse, error) {
+	Name := req.GetName()
+	Email := req.GetEmail()
+	Password := req.GetPassword()
+	ConfirmPassword := req.GetPasswordConfirm()
+	Role := req.GetRole().String()
+
+	InsertBuilder := s.qb.Insert("users").
 		PlaceholderFormat(sq.Dollar).
-		Columns(usersName, usersEmail, usersPassword, usersPasswordConfirm, usersRole).
-		Values(name, email, password, confirmPassword, role).
+		Columns("name", "email", "password", "password_confirm", "role").
+		Values(Name, Email, Password, ConfirmPassword, Role).
 		Suffix("RETURNING id")
 
 	query, args, err := InsertBuilder.ToSql()
 	if err != nil {
-		_ = fmt.Errorf("failed to build query: %v", err)
+		log.Fatalf("failed to build query: %v", err)
 	}
 
 	var userID int64
 
 	err = s.db.QueryRow(ctx, query, args...).Scan(&userID)
 	if err != nil {
-		_ = fmt.Errorf("failed to insert user: %v", err)
+		log.Fatalf("failed to insert user: %v", err)
 	}
 
 	log.Printf("inserted user with ID: %d", userID)
@@ -117,29 +108,30 @@ func (s *server) Create(ctx context.Context, req *user_api_v1.CreateRequest) (*u
 		Id: userID,
 	}, nil
 }
+
 func (s *server) Update(ctx context.Context, req *user_api_v1.UpdateRequest) (*emptypb.Empty, error) {
 
-	iD := req.GetId()
-	name := req.GetName()
-	email := req.GetEmail()
-	role := req.GetRole()
+	ID := req.GetId()
+	Name := req.GetName()
+	Email := req.GetEmail()
+	Role := req.GetRole()
 
-	UpdateBuilder := s.qb.Update(TableUsers).
+	UpdateBuilder := s.qb.Update("users").
 		PlaceholderFormat(sq.Dollar).
-		Set(usersName, name).
-		Set(usersEmail, email).
-		Set(usersRole, role).
-		Set(usersUpdatedat, time.Now()).
-		Where(sq.Eq{usersId: iD})
+		Set("name", Name).
+		Set("email", Email).
+		Set("role", Role).
+		Set("updated_at", time.Now()).
+		Where(sq.Eq{"id": ID})
 
 	query, agrs, err := UpdateBuilder.ToSql()
 	if err != nil {
-		_ = fmt.Errorf("failed to builder update: %v", err)
+		log.Fatalf("failed to builder update: %v", err)
 	}
 
 	res, err := s.db.Exec(ctx, query, agrs...)
 	if err != nil {
-		_ = fmt.Errorf("failed to update db row: %v", err)
+		log.Fatalf("failed to update db row: %v", err)
 	}
 
 	log.Printf("updated %d rows", res.RowsAffected())
@@ -150,47 +142,48 @@ func (s *server) Update(ctx context.Context, req *user_api_v1.UpdateRequest) (*e
 // Delete Cоздадим удаление пользователя.
 func (s *server) Delete(ctx context.Context, req *user_api_v1.DeleteRequest) (*emptypb.Empty, error) {
 
-	iD := req.GetId()
+	ID := req.GetId()
 
-	DeleteBuilder := s.qb.Delete(TableUsers).
-		Where(sq.Eq{usersId: iD})
+	DeleteBuilder := s.qb.Delete("users").
+		Where(sq.Eq{"id": ID})
 
 	query, args, err := DeleteBuilder.ToSql()
 	if err != nil {
-		_ = fmt.Errorf("failed to build query: %v", err)
+		log.Fatalf("failed to build query: %v", err)
 	}
 
 	row, err := s.db.Exec(ctx, query, args...)
 	if err != nil {
-		_ = fmt.Errorf("failed to delete user: %v", err)
+		log.Fatalf("failed to delete user: %v", err)
 	}
 
 	log.Printf("delete %d rows", row.RowsAffected())
 
 	return &emptypb.Empty{}, nil
 }
+
 func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
 	pgxConfig, err := pgxpool.ParseConfig(dbDSN)
 	if err != nil {
-		_ = fmt.Errorf("failed to patde config: %v", err)
+		log.Fatalf("failed to patde config: %v", err)
 	}
 
 	pool, err := pgxpool.NewWithConfig(ctx, pgxConfig)
 	if err != nil {
-		_ = fmt.Errorf("failed to connect to postgres: %v", err)
+		log.Fatalf("failed to connect to postgres: %v", err)
 	}
 
 	err = pool.Ping(ctx)
 	if err != nil {
-		_ = fmt.Errorf("ping to postgres failed: %v", err)
+		log.Fatalf("ping to postgres failed: %v", err)
 	}
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", grpcPort))
 	if err != nil {
-		_ = fmt.Errorf("failed to listen: %v", err)
+		log.Fatalf("failed to listen: %v", err)
 	}
 
 	s := grpc.NewServer()

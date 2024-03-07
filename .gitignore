@@ -1,2 +1,4 @@
-../.idea
-/config/bin
+.idea
+bin
+.env
+internal/config/*
