@@ -54,23 +54,23 @@ func (s *server) Get(ctx context.Context, req *user_api_v1.GetRequest) (*user_ap
 	iD := req.GetId()
 
 	SelectBuilder := s.qb.Select(usersId, usersName, usersEmail, usersRole, usersCreatedat, usersUpdatedat).
-		From(TableUsers).
+		From(tableUsers).
 		Where(sq.Eq{usersId: iD})
 
 	query, args, err := SelectBuilder.ToSql()
 	if err != nil {
-		_ = fmt.Errorf("failed to build query: %v", err)
+		log.Printf("failed to build query: %v", err)
 
 	}
 
 	row, err := s.db.Query(ctx, query, args...)
 	if err != nil {
-		_ = fmt.Errorf("failed to get user from query: %v", err)
+		log.Printf("failed to get user from query: %v", err)
 	}
 
 	user, err := pgx.CollectOneRow(row, pgx.RowToAddrOfStructByNameLax[User])
 	if err != nil {
-		_ = fmt.Errorf("failed to collect user from db: %v", err)
+		log.Printf("failed to collect user from db: %v", err)
 	}
 
 	roleNum := user_api_v1.Role_value[user.Role]
@@ -101,14 +101,14 @@ func (s *server) Create(ctx context.Context, req *user_api_v1.CreateRequest) (*u
 
 	query, args, err := InsertBuilder.ToSql()
 	if err != nil {
-		_ = fmt.Errorf("failed to build query: %v", err)
+		log.Printf("failed to build query: %v", err)
 	}
 
 	var userID int64
 
 	err = s.db.QueryRow(ctx, query, args...).Scan(&userID)
 	if err != nil {
-		_ = fmt.Errorf("failed to insert user: %v", err)
+		log.Printf("failed to insert user: %v", err)
 	}
 
 	log.Printf("inserted user with ID: %d", userID)
@@ -134,12 +134,12 @@ func (s *server) Update(ctx context.Context, req *user_api_v1.UpdateRequest) (*e
 
 	query, agrs, err := UpdateBuilder.ToSql()
 	if err != nil {
-		_ = fmt.Errorf("failed to builder update: %v", err)
+		log.Printf("failed to builder update: %v", err)
 	}
 
 	res, err := s.db.Exec(ctx, query, agrs...)
 	if err != nil {
-		_ = fmt.Errorf("failed to update db row: %v", err)
+		log.Printf("failed to update db row: %v", err)
 	}
 
 	log.Printf("updated %d rows", res.RowsAffected())
@@ -157,12 +157,12 @@ func (s *server) Delete(ctx context.Context, req *user_api_v1.DeleteRequest) (*e
 
 	query, args, err := DeleteBuilder.ToSql()
 	if err != nil {
-		_ = fmt.Errorf("failed to build query: %v", err)
+		log.Printf("failed to build query: %v", err)
 	}
 
 	row, err := s.db.Exec(ctx, query, args...)
 	if err != nil {
-		_ = fmt.Errorf("failed to delete user: %v", err)
+		log.Printf("failed to delete user: %v", err)
 	}
 
 	log.Printf("delete %d rows", row.RowsAffected())
@@ -175,22 +175,22 @@ func main() {
 
 	pgxConfig, err := pgxpool.ParseConfig(dbDSN)
 	if err != nil {
-		_ = fmt.Errorf("failed to patde config: %v", err)
+		log.Printf("failed to patde config: %v", err)
 	}
 
 	pool, err := pgxpool.NewWithConfig(ctx, pgxConfig)
 	if err != nil {
-		_ = fmt.Errorf("failed to connect to postgres: %v", err)
+		log.Printf("failed to connect to postgres: %v", err)
 	}
 
 	err = pool.Ping(ctx)
 	if err != nil {
-		_ = fmt.Errorf("ping to postgres failed: %v", err)
+		log.Printf("ping to postgres failed: %v", err)
 	}
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", grpcPort))
 	if err != nil {
-		_ = fmt.Errorf("failed to listen: %v", err)
+		log.Printf("failed to listen: %v", err)
 	}
 
 	s := grpc.NewServer()
